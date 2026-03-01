@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/OpenClaw-Multi--Agent-blue?style=for-the-badge" alt="OpenClaw">
   <br/>
-  <img src="https://img.shields.io/badge/version-1.0.0-brightgreen?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-1.1.0-brightgreen?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/agents-9-orange?style=flat-square" alt="Agents">
   <img src="https://img.shields.io/badge/channels-feishu%20%7C%20whatsapp%20%7C%20telegram%20%7C%20discord-purple?style=flat-square" alt="Channels">
@@ -12,7 +12,7 @@
 <p align="center">
   <strong>One-command multi-agent initialization for <a href="https://docs.openclaw.ai">OpenClaw</a></strong>
   <br/>
-  <em>Ship an entire AI agent fleet to your chat group in 60 seconds.</em>
+  <em>Ship an entire AI agent fleet to your chat group in 60 seconds. Default model: <code>zai/glm-5</code></em>
 </p>
 
 <p align="center">
@@ -39,6 +39,8 @@
 - 📋 **4 workflow templates** — Paper Pipeline, Daily Digest, Brainstorm, Rebuttal
 - ⚔️ **Adversarial collaboration** — Ideator↔Critic and Writer↔Reviewer creative tension
 - 🎯 **SHARP taste gates** — quality checkpoints enforced by the Critic agent
+- 🛡️ **Safe merge** — appends agents to existing config, never overwrites your main agent
+- 🎛️ **Flexible model** — unified model or per-agent customization via `--model-map`
 - 🧩 **Extensible** — add custom agents via `agents.yaml`
 
 ---
@@ -95,7 +97,8 @@ Ask the user these questions:
    - WhatsApp: `xxxxx@g.us`
    - Telegram: `-1001234567890`
    - Discord: guild ID
-3. **Which LLM model?** (default: `anthropic/claude-sonnet-4-5`) → `--model <MODEL>`
+3. **Which LLM model?** (default: `zai/glm-5`) → `--model <MODEL>`
+   - Want different models per agent? → `--model-map 'coder=ollama/kimi-k2.5:cloud,writer=zai/glm-4.7'`
 4. **Do you need a session ID for group routing?** → `--session-id <ID>` (optional)
 
 #### Step 2: Clone and Run Setup
@@ -109,8 +112,8 @@ chmod +x setup.sh
 
 **Examples:**
 - Feishu group: `./setup.sh --channel feishu --group-id oc_b1c331592eaa36d06a7e5df05d08a890`
-- WhatsApp group: `./setup.sh --channel whatsapp --group-id 120363999999999999@g.us`
-- Telegram group: `./setup.sh --channel telegram --group-id -1001234567890`
+- Custom model: `./setup.sh --model ollama/kimi-k2.5:cloud --channel feishu --group-id oc_xxx`
+- Per-agent models: `./setup.sh --model-map 'coder=ollama/kimi-k2.5:cloud,writer=zai/glm-4.7' --channel feishu --group-id oc_xxx`
 - Agents only (no channel): `./setup.sh --skip-bindings`
 - Dry-run preview: `./setup.sh --dry-run --channel feishu --group-id oc_xxx`
 
@@ -389,6 +392,36 @@ The Critic agent enforces quality at four critical checkpoints:
 
 ## 🧩 Customization
 
+### Model Configuration
+
+The default model is **`zai/glm-5`**. You have three options:
+
+#### Option A: Same model for all agents (default)
+
+```bash
+# Uses zai/glm-5 for all 8 sub-agents
+./setup.sh --channel feishu --group-id oc_xxx
+```
+
+#### Option B: Change the unified model
+
+```bash
+# All agents use the same custom model
+./setup.sh --model ollama/kimi-k2.5:cloud --channel feishu --group-id oc_xxx
+```
+
+#### Option C: Different models per agent
+
+```bash
+# Default is zai/glm-5, but coder and writer get different models
+./setup.sh \
+  --model zai/glm-5 \
+  --model-map 'coder=ollama/kimi-k2.5:cloud,writer=zai/glm-4.7,scout=zai/glm-4.7-flash' \
+  --channel feishu --group-id oc_xxx
+```
+
+`--model-map` takes priority over `--model` for specified agents. Agents not in the map use the `--model` default.
+
 ### Adding Custom Agents
 
 1. Add the agent definition to `agents.yaml`:
@@ -400,7 +433,7 @@ agents:
     name: "🔢 Math Prover"
     emoji: "🔢"
     role: "Theorem proving, convergence analysis"
-    model: "anthropic/claude-sonnet-4-5"
+    model: "zai/glm-5"
     protected: false
     workspace: ".agents/math-prover"
 ```
@@ -408,14 +441,8 @@ agents:
 2. Re-run `./setup.sh` or add manually:
 
 ```bash
-openclaw agents add math-prover --model anthropic/claude-sonnet-4-5 --workspace .agents/math-prover
+openclaw agents add math-prover --model zai/glm-5 --workspace .agents/math-prover
 openclaw agents set-identity --agent math-prover --name "🔢 Math Prover"
-```
-
-### Changing the Default Model
-
-```bash
-./setup.sh --model anthropic/claude-sonnet-4-5
 ```
 
 ---
@@ -464,10 +491,13 @@ openclaw-agents/
 | `--channel` | Channel type (feishu/whatsapp/telegram/discord/slack) | Interactive prompt |
 | `--group-id` | Group/chat ID for channel binding | Interactive prompt |
 | `--session-id` | Session ID for group routing | None |
-| `--model` | LLM model for all agents | `anthropic/claude-sonnet-4-5` |
+| `--model` | Default LLM model for all agents | `zai/glm-5` |
+| `--model-map` | Per-agent model overrides (`id=model,...`) | None |
 | `--skip-bindings` | Skip channel binding setup | `false` |
 | `--dry-run` | Preview commands without executing | `false` |
 | `-h, --help` | Show help | — |
+
+> 🛡️ **Safe Merge**: The setup script **appends** sub-agents to your existing `openclaw.json`. It will never overwrite your main agent, auth, models, plugins, or gateway settings. A backup is created automatically before any changes.
 
 ### OpenClaw Commands
 

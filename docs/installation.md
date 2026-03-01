@@ -78,9 +78,13 @@ Ask the user these questions to determine setup flags:
    - → `--group-id <ID>`
 
 3. **Which LLM model do you want to use?** (optional)
-   - Default: `anthropic/claude-sonnet-4-5`
-   - Other options: `anthropic/claude-opus-4-6`, `google/gemini-3-pro`, etc.
+   - Default: `zai/glm-5`
+   - Other options: `ollama/kimi-k2.5:cloud`, `zai/glm-4.7`, `zai/glm-4.7-flash`, etc.
    - → `--model <MODEL>`
+
+4. **Do you want different models per agent?** (optional)
+   - Example: `--model-map 'coder=ollama/kimi-k2.5:cloud,writer=zai/glm-4.7'`
+   - If not specified, all agents use the `--model` default
 
 4. **Do you need a session ID for group routing?** (optional)
    - Usually not needed for basic setups
@@ -116,7 +120,12 @@ Based on the user's answers, construct the command:
 
 - User has Telegram with custom model:
   ```bash
-  ./setup.sh --channel telegram --group-id -1001234567890 --model anthropic/claude-opus-4-6
+  ./setup.sh --channel telegram --group-id -1001234567890 --model ollama/kimi-k2.5:cloud
+  ```
+
+- User wants per-agent models:
+  ```bash
+  ./setup.sh --model zai/glm-5 --model-map 'coder=ollama/kimi-k2.5:cloud,writer=zai/glm-4.7' --channel feishu --group-id oc_xxx
   ```
 
 - User wants agents only (no channel):

@@ -5,7 +5,7 @@
                 "id": "main",
                 "name": "🐾 OpenClaw",
                 "workspace": "~/.openclaw/workspace-main",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "default": true,
                 "identity": {
                     "name": "🐾 OpenClaw"
@@ -23,7 +23,7 @@
                 "id": "planner",
                 "name": "🧠 Planner",
                 "workspace": "~/.openclaw/workspace-planner",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "🧠 Planner"
                 },
@@ -40,7 +40,7 @@
                 "id": "ideator",
                 "name": "💡 Ideator",
                 "workspace": "~/.openclaw/workspace-ideator",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "💡 Ideator"
                 },
@@ -57,7 +57,7 @@
                 "id": "critic",
                 "name": "🎯 Critic",
                 "workspace": "~/.openclaw/workspace-critic",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "🎯 Critic"
                 },
@@ -74,7 +74,7 @@
                 "id": "surveyor",
                 "name": "📚 Surveyor",
                 "workspace": "~/.openclaw/workspace-surveyor",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "📚 Surveyor"
                 },
@@ -91,7 +91,7 @@
                 "id": "coder",
                 "name": "💻 Coder",
                 "workspace": "~/.openclaw/workspace-coder",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "💻 Coder"
                 },
@@ -108,7 +108,7 @@
                 "id": "writer",
                 "name": "✍️ Writer",
                 "workspace": "~/.openclaw/workspace-writer",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "✍️ Writer"
                 },
@@ -125,7 +125,7 @@
                 "id": "reviewer",
                 "name": "🔍 Reviewer",
                 "workspace": "~/.openclaw/workspace-reviewer",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "🔍 Reviewer"
                 },
@@ -142,7 +142,7 @@
                 "id": "scout",
                 "name": "📰 Scout",
                 "workspace": "~/.openclaw/workspace-scout",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "📰 Scout"
                 },

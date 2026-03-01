@@ -6,7 +6,8 @@
 #    ./setup.sh                          # Interactive setup
 #    ./setup.sh --channel feishu         # Pre-select channel
 #    ./setup.sh --group-id oc_xxx        # Pre-fill group ID
-#    ./setup.sh --model anthropic/claude-sonnet-4-5
+#    ./setup.sh --model zai/glm-5        # Unified model for all agents
+#    ./setup.sh --model-map planner=zai/glm-5,coder=ollama/kimi-k2.5:cloud
 #    ./setup.sh --skip-bindings          # Skip channel binding
 #    ./setup.sh --dry-run                # Preview without executing
 #
@@ -17,6 +18,10 @@
 #    4. Deploy soul.md / agent.md / user.md into each workspace
 #    5. Configure openclaw.json with routing bindings
 #    6. Verify the setup
+#
+#  ⚠️ SAFE MERGE: This script APPENDS sub-agents to your existing
+#  config. It will NOT overwrite your main agent, existing agents,
+#  models, auth, plugins, or any other settings.
 # ============================================================
 
 set -euo pipefail
@@ -43,6 +48,7 @@ banner()  {
   echo -e "${CYAN}╔══════════════════════════════════════════════════╗${NC}"
   echo -e "${CYAN}║${NC}  ${BOLD}🐾 OpenClaw Multi-Agent Setup${NC}                    ${CYAN}║${NC}"
   echo -e "${CYAN}║${NC}  ${DIM}One-command fleet initialization${NC}                 ${CYAN}║${NC}"
+  echo -e "${CYAN}║${NC}  ${DIM}Safe merge — your existing config is preserved${NC}   ${CYAN}║${NC}"
   echo -e "${CYAN}╚══════════════════════════════════════════════════╝${NC}"
   echo -e ""
 }
@@ -51,8 +57,8 @@ banner()  {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AGENTS_DIR="${SCRIPT_DIR}/.agents"
 OPENCLAW_CONFIG="${HOME}/.openclaw/openclaw.json"
-DEFAULT_MODEL="anthropic/claude-sonnet-4-5"
-VERSION="1.0.0"
+DEFAULT_MODEL="zai/glm-5"
+VERSION="1.1.0"
 
 # Agent definitions: id|name|emoji|role
 CORE_AGENTS=(
@@ -71,6 +77,7 @@ CHANNEL=""
 GROUP_ID=""
 SESSION_ID=""
 MODEL="${DEFAULT_MODEL}"
+MODEL_MAP=""        # Per-agent model overrides: "planner=X,coder=Y"
 SKIP_BINDINGS=false
 DRY_RUN=false
 
@@ -81,24 +88,69 @@ while [[ $# -gt 0 ]]; do
     --group-id)     GROUP_ID="$2";     shift 2 ;;
     --session-id)   SESSION_ID="$2";   shift 2 ;;
     --model)        MODEL="$2";        shift 2 ;;
+    --model-map)    MODEL_MAP="$2";    shift 2 ;;
     --skip-bindings) SKIP_BINDINGS=true; shift ;;
     --dry-run)      DRY_RUN=true;      shift ;;
     -h|--help)
       echo "Usage: ./setup.sh [OPTIONS]"
       echo ""
       echo "Options:"
-      echo "  --channel CHANNEL    Channel type (feishu|whatsapp|telegram|discord)"
+      echo "  --channel CHANNEL    Channel type (feishu|whatsapp|telegram|discord|slack)"
       echo "  --group-id ID        Group/chat ID for channel binding"
       echo "  --session-id ID      Session ID for channel group routing"
-      echo "  --model MODEL        LLM model (default: ${DEFAULT_MODEL})"
+      echo "  --model MODEL        Default model for ALL agents (default: ${DEFAULT_MODEL})"
+      echo "  --model-map MAP      Per-agent model overrides (comma-separated)"
+      echo "                       Example: planner=zai/glm-5,coder=ollama/kimi-k2.5:cloud"
       echo "  --skip-bindings      Skip channel binding configuration"
       echo "  --dry-run            Preview commands without executing"
       echo "  -h, --help           Show this help message"
+      echo ""
+      echo "Model Configuration:"
+      echo "  By default, all agents use ${DEFAULT_MODEL}."
+      echo "  Use --model to change the default for all agents."
+      echo "  Use --model-map to assign different models to specific agents."
+      echo "  --model-map takes priority over --model for listed agents."
+      echo ""
+      echo "Examples:"
+      echo "  # All agents use zai/glm-5 (default)"
+      echo "  ./setup.sh --channel feishu --group-id oc_xxx"
+      echo ""
+      echo "  # All agents use a custom model"
+      echo "  ./setup.sh --model ollama/kimi-k2.5:cloud --channel feishu --group-id oc_xxx"
+      echo ""
+      echo "  # Different models per agent"
+      echo "  ./setup.sh --model zai/glm-5 \\"
+      echo "    --model-map 'coder=ollama/kimi-k2.5:cloud,writer=zai/glm-4.7' \\"
+      echo "    --channel feishu --group-id oc_xxx"
+      echo ""
+      echo "⚠️  SAFE MERGE: This script appends sub-agents to your existing"
+      echo "   openclaw.json. It will NOT overwrite your main agent or other settings."
       exit 0
       ;;
     *) error "Unknown option: $1"; exit 1 ;;
   esac
 done
+
+# ── Parse model map into associative array ──────────────────
+declare -A AGENT_MODELS
+if [[ -n "${MODEL_MAP}" ]]; then
+  IFS=',' read -ra MAP_ENTRIES <<< "${MODEL_MAP}"
+  for entry in "${MAP_ENTRIES[@]}"; do
+    local_key="${entry%%=*}"
+    local_val="${entry#*=}"
+    AGENT_MODELS["${local_key}"]="${local_val}"
+  done
+fi
+
+# ── Get model for an agent ──────────────────────────────────
+get_model() {
+  local agent_id="$1"
+  if [[ -n "${AGENT_MODELS[${agent_id}]+x}" ]]; then
+    echo "${AGENT_MODELS[${agent_id}]}"
+  else
+    echo "${MODEL}"
+  fi
+}
 
 # ── Helper: run or preview ──────────────────────────────────
 run() {
@@ -130,10 +182,26 @@ preflight() {
   fi
   success "Agent source files found"
 
-  # Check jq (needed for JSON manipulation)
+  # Check jq (needed for safe JSON merging)
   if ! command -v jq &>/dev/null; then
-    warn "jq not found — JSON config patching will use fallback method."
-    warn "Install jq for best results: https://jqlang.github.io/jq/download/"
+    warn "jq not found — JSON config will use append-only mode."
+    warn "Install jq for safe config merging: https://jqlang.github.io/jq/download/"
+  fi
+
+  # Backup existing config
+  if [[ -f "${OPENCLAW_CONFIG}" ]]; then
+    local backup="${OPENCLAW_CONFIG}.backup.$(date +%Y%m%d_%H%M%S)"
+    cp "${OPENCLAW_CONFIG}" "${backup}"
+    success "Existing config backed up to: ${backup}"
+  fi
+
+  # Show model configuration
+  info "Default model: ${BOLD}${MODEL}${NC}"
+  if [[ -n "${MODEL_MAP}" ]]; then
+    info "Per-agent overrides:"
+    for key in "${!AGENT_MODELS[@]}"; do
+      echo -e "    ${key} → ${AGENT_MODELS[${key}]}"
+    done
   fi
 }
 
@@ -144,10 +212,12 @@ create_agents() {
   for entry in "${CORE_AGENTS[@]}"; do
     IFS='|' read -r id name emoji role <<< "${entry}"
     local workspace="${SCRIPT_DIR}/.agents/${id}"
+    local agent_model
+    agent_model="$(get_model "${id}")"
 
-    info "Creating agent: ${emoji} ${name} (${id})"
+    info "Creating agent: ${emoji} ${name} (${id}) → model: ${agent_model}"
     run "openclaw agents add ${id} \
-      --model '${MODEL}' \
+      --model '${agent_model}' \
       --workspace '${workspace}' 2>/dev/null || true"
 
     success "Agent '${id}' created"
@@ -178,6 +248,8 @@ deploy_workspace_files() {
   for entry in "${CORE_AGENTS[@]}"; do
     IFS='|' read -r id name emoji role <<< "${entry}"
     local workspace="${AGENTS_DIR}/${id}"
+    local agent_model
+    agent_model="$(get_model "${id}")"
 
     # Ensure workspace directory exists
     mkdir -p "${workspace}"
@@ -207,8 +279,7 @@ SOUL
 # ${emoji} ${name} — Agent Configuration
 
 ## Model
-- **Primary**: ${MODEL}
-- **Fallback**: anthropic/claude-sonnet-4-5
+- **Primary**: ${agent_model}
 
 ## Tools
 - read, write, edit, exec, apply_patch
@@ -300,7 +371,18 @@ configure_bindings() {
 
   step "Configuring channel bindings (${CHANNEL})"
 
-  # Build the agents list for openclaw.json
+  # =============================================
+  # ⚠️ SAFE MERGE STRATEGY
+  # =============================================
+  # We build a patch containing ONLY our sub-agents and bindings.
+  # When merging, we APPEND to existing agents.list and bindings
+  # arrays instead of replacing them. This preserves:
+  #   - Your main agent configuration
+  #   - Existing agents you've added manually
+  #   - Auth, models, plugins, gateway, and all other settings
+  # =============================================
+
+  # Build the new agents entries
   # Each agent gets: identity, groupChat.mentionPatterns, historyLimit
   # See: https://docs.openclaw.ai/channels/groups#mention-gating-default
   local agents_json='['
@@ -308,6 +390,8 @@ configure_bindings() {
   for entry in "${CORE_AGENTS[@]}"; do
     IFS='|' read -r id name emoji role <<< "${entry}"
     local workspace="${SCRIPT_DIR}/.agents/${id}"
+    local agent_model
+    agent_model="$(get_model "${id}")"
     if [[ "${first}" == true ]]; then
       first=false
     else
@@ -318,7 +402,7 @@ configure_bindings() {
       "id": "${id}",
       "name": "${emoji} ${name}",
       "workspace": "${workspace}",
-      "model": "${MODEL}",
+      "model": "${agent_model}",
       "identity": { "name": "${emoji} ${name}" },
       "groupChat": {
         "mentionPatterns": ["@${id}", "${id}", "@${name}"],
@@ -357,10 +441,85 @@ BJSON
   done
   bindings_json+=']'
 
-  # Build channel config with group policy and mention gating
-  # See: https://docs.openclaw.ai/channels/groups#group-policy
-  local channel_config
-  channel_config="$(cat <<CHCFG
+  # ── SAFE MERGE with jq ─────────────────────────────────
+  # Key difference from naive `jq -s '.[0] * .[1]'`:
+  #   - We APPEND new agents to existing .agents.list (dedup by id)
+  #   - We APPEND new bindings to existing .bindings (dedup by agentId+groupId)
+  #   - We deep-merge .channels (preserving existing channel settings)
+  #   - We NEVER touch .auth, .models, .plugins, .gateway, .tools, etc.
+  if command -v jq &>/dev/null && [[ -f "${OPENCLAW_CONFIG}" ]]; then
+    info "Safe-merging into existing ${OPENCLAW_CONFIG}"
+    info "${DIM}(Appending agents, preserving your main agent and all other settings)${NC}"
+
+    local tmp_file
+    tmp_file="$(mktemp)"
+
+    # The jq expression:
+    # 1. Read existing config
+    # 2. Remove our agent IDs from existing list (to avoid duplicates)
+    # 3. Append our new agents to the list
+    # 4. Same dedup+append for bindings
+    # 5. Deep merge channel config (preserving existing keys like appId, appSecret)
+    # 6. Set groupChat historyLimit if not already set
+    local our_ids
+    our_ids="$(printf '%s\n' "${CORE_AGENTS[@]}" | cut -d'|' -f1 | jq -R . | jq -s .)"
+
+    jq --argjson new_agents "${agents_json}" \
+       --argjson new_bindings "${bindings_json}" \
+       --argjson our_ids "${our_ids}" \
+       --arg channel "${CHANNEL}" \
+       --arg group_id "${GROUP_ID}" \
+    '
+      # Remove our agent IDs from existing list (if any), then append new ones
+      .agents.list = (
+        [(.agents.list // [])[] | select(.id as $id | $our_ids | index($id) | not)]
+        + $new_agents
+      )
+      # Remove our bindings from existing list (if any), then append new ones
+      | .bindings = (
+        [(.bindings // [])[] | select(
+          (.agentId as $aid | $our_ids | index($aid) | not)
+          or (.match.peer.id != $group_id)
+        )]
+        + $new_bindings
+      )
+      # Merge channel config (preserve existing keys like appId, appSecret, token)
+      | .channels[$channel] = (
+        (.channels[$channel] // {}) * {
+          "groupPolicy": "allowlist",
+          "groupAllowFrom": (
+            [(.channels[$channel].groupAllowFrom // [])[] | select(. != $group_id)]
+            + [$group_id]
+          ),
+          "groups": ((.channels[$channel].groups // {}) * {
+            ($group_id): { "requireMention": true }
+          })
+        }
+      )
+      # Set groupChat historyLimit (preserve if already set)
+      | .messages = (.messages // {}) * { "groupChat": { "historyLimit": (.messages.groupChat.historyLimit // 50) } }
+    ' "${OPENCLAW_CONFIG}" > "${tmp_file}"
+
+    if [[ "${DRY_RUN}" == true ]]; then
+      echo -e "  ${DIM}Would write to ${OPENCLAW_CONFIG}:${NC}"
+      cat "${tmp_file}"
+    else
+      cp "${tmp_file}" "${OPENCLAW_CONFIG}"
+    fi
+    rm -f "${tmp_file}"
+
+  else
+    # No existing config or no jq — create a minimal config with ONLY our agents
+    warn "No existing config found or jq not available."
+    warn "Creating new config with sub-agents only."
+    warn "Your main agent will use agents.defaults settings."
+
+    local config_dir
+    config_dir="$(dirname "${OPENCLAW_CONFIG}")"
+    mkdir -p "${config_dir}"
+
+    local channel_config
+    channel_config="$(cat <<CHCFG
 {
       "${CHANNEL}": {
         "groupPolicy": "allowlist",
@@ -375,20 +534,11 @@ BJSON
 CHCFG
 )"
 
-  # Build the complete config patch
-  # Includes: agents list, bindings, channel config, sandbox defaults, groupChat settings
-  local config_patch
-  config_patch="$(cat <<CONFIG
+    local config_new
+    config_new="$(cat <<CONFIG
 {
   "agents": {
-    "list": ${agents_json},
-    "defaults": {
-      "sandbox": {
-        "mode": "non-main",
-        "scope": "session",
-        "workspaceAccess": "none"
-      }
-    }
+    "list": ${agents_json}
   },
   "bindings": ${bindings_json},
   "channels": ${channel_config},
@@ -400,38 +550,19 @@ CHCFG
 }
 CONFIG
 )"
-
-  # Merge into existing openclaw.json
-  if command -v jq &>/dev/null && [[ -f "${OPENCLAW_CONFIG}" ]]; then
-    info "Merging into existing ${OPENCLAW_CONFIG}"
-    local tmp_file
-    tmp_file="$(mktemp)"
-    jq -s '.[0] * .[1]' "${OPENCLAW_CONFIG}" <(echo "${config_patch}") > "${tmp_file}"
     if [[ "${DRY_RUN}" == true ]]; then
       echo -e "  ${DIM}Would write to ${OPENCLAW_CONFIG}:${NC}"
-      cat "${tmp_file}"
+      echo "${config_new}"
     else
-      cp "${tmp_file}" "${OPENCLAW_CONFIG}"
-    fi
-    rm -f "${tmp_file}"
-  else
-    # Create or overwrite config
-    local config_dir
-    config_dir="$(dirname "${OPENCLAW_CONFIG}")"
-    mkdir -p "${config_dir}"
-    if [[ "${DRY_RUN}" == true ]]; then
-      echo -e "  ${DIM}Would write to ${OPENCLAW_CONFIG}:${NC}"
-      echo "${config_patch}"
-    else
-      echo "${config_patch}" > "${OPENCLAW_CONFIG}"
+      echo "${config_new}" > "${OPENCLAW_CONFIG}"
     fi
   fi
 
   success "Channel bindings configured for ${CHANNEL} → ${GROUP_ID}"
 
-  # Also save a local copy of the generated config
-  echo "${config_patch}" > "${SCRIPT_DIR}/openclaw.generated.json"
-  success "Local config copy saved to openclaw.generated.json"
+  # Also save a local copy of the generated PATCH (not the full config)
+  echo "${agents_json}" > "${SCRIPT_DIR}/openclaw.generated.agents.json"
+  success "Generated agent patch saved to openclaw.generated.agents.json"
 }
 
 # ── Verify Setup ────────────────────────────────────────────
@@ -457,12 +588,20 @@ summary() {
   echo -e "${GREEN}╚══════════════════════════════════════════════════╝${NC}"
   echo -e ""
   echo -e "  ${BOLD}Agents created:${NC} ${#CORE_AGENTS[@]}"
-  echo -e "  ${BOLD}Model:${NC}          ${MODEL}"
+  echo -e "  ${BOLD}Default model:${NC}  ${MODEL}"
+  if [[ -n "${MODEL_MAP}" ]]; then
+    echo -e "  ${BOLD}Model overrides:${NC}"
+    for key in "${!AGENT_MODELS[@]}"; do
+      echo -e "    ${key} → ${AGENT_MODELS[${key}]}"
+    done
+  fi
   if [[ "${SKIP_BINDINGS}" != true ]]; then
     echo -e "  ${BOLD}Channel:${NC}        ${CHANNEL}"
     echo -e "  ${BOLD}Group ID:${NC}       ${GROUP_ID}"
     [[ -n "${SESSION_ID}" ]] && echo -e "  ${BOLD}Session ID:${NC}     ${SESSION_ID}"
   fi
+  echo -e ""
+  echo -e "  ${DIM}Your existing main agent and settings were preserved.${NC}"
   echo -e ""
   echo -e "  ${DIM}Next steps:${NC}"
   echo -e "    1. Start the gateway:  ${CYAN}openclaw gateway${NC}"

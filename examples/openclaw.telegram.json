@@ -5,7 +5,7 @@
                 "id": "main",
                 "name": "🐾 OpenClaw",
                 "workspace": "~/.openclaw/workspace-main",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "default": true,
                 "identity": {
                     "name": "🐾 OpenClaw"
@@ -22,7 +22,7 @@
                 "id": "planner",
                 "name": "🧠 Planner",
                 "workspace": "~/.openclaw/workspace-planner",
-                "model": "anthropic/claude-sonnet-4-5",
+                "model": "zai/glm-5",
                 "identity": {
                     "name": "🧠 Planner"
                 },
