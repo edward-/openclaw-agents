@@ -564,6 +564,12 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=shenhao-stu/openclaw-agents&type=Date)](https://www.star-history.com/#shenhao-stu/openclaw-agents&Date)
+
+---
+
 ## 📄 License
 
 [MIT](LICENSE) — Use freely, modify openly, share generously.
