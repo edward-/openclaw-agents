@@ -60,14 +60,14 @@ OPENCLAW_CONFIG="${OPENCLAW_HOME}/openclaw.json"
 DEFAULT_MODEL="zai/glm-5"
 
 CORE_AGENTS=(
-  "planner|Planner|🧠|统筹规划师"
-  "ideator|Ideator|💡|创意大师"
-  "critic|Critic|🎯|品鉴师"
-  "surveyor|Surveyor|📚|文献专家"
-  "coder|Coder|💻|代码工程师"
-  "writer|Writer|✍️|论文写手"
-  "reviewer|Reviewer|🔍|内部审稿人"
-  "scout|Scout|📰|学术情报员"
+  "planner|Planner|🧠|Planning Coordinator"
+  "ideator|Ideator|💡|Creative Master"
+  "critic|Critic|🎯|Critic"
+  "surveyor|Surveyor|📚|Literature Expert"
+  "coder|Coder|💻|Code Engineer"
+  "writer|Writer|✍️|Paper Writer"
+  "reviewer|Reviewer|🔍|Internal Reviewer"
+  "scout|Scout|📰|Academic Intelligence Officer"
 )
 
 MODE=""
@@ -196,14 +196,14 @@ deploy_source_files() {
     cat > "${workspace}/BOOTSTRAP.md" << 'BOOTEOF'
 # 🐾 OpenClaw Multi-Agent Bootstrap
 
-你是 OpenClaw 多智能体系统中的一个子 Agent。这是你的首次启动。
+You are a sub-agent in the OpenClaw multi-agent system. This is your first launch.
 
-## 请按顺序执行以下步骤：
-1. **合并你的身份（SOUL.md）**：读取 `_soul_source.md`，追加合并到现有的 `SOUL.md` 中。
-2. **合并用户上下文（USER.md）**：读取 `_user_source.md`，合并到你的 `USER.md` 中。
-3. **了解配置**：读取 `_agent_source.md`。
-4. **阅读工作流**：检查 `AGENTS.md` 底部的工作流指引。
-5. **清理**：删除本文件 (`BOOTSTRAP.md`) 和所有 `_*_source.md` 文件。
+## Please follow these steps in order:
+1. **Merge your identity (SOUL.md)**: Read `_soul_source.md` and append-merge it into your existing `SOUL.md`.
+2. **Merge user context (USER.md)**: Read `_user_source.md` and merge it into your `USER.md`.
+3. **Understand configuration**: Read `_agent_source.md`.
+4. **Read workflow**: Check the workflow instructions at the bottom of `AGENTS.md`.
+5. **Cleanup**: Delete this file (`BOOTSTRAP.md`) and all `_*_source.md` files.
 BOOTEOF
   done
 }
@@ -266,7 +266,7 @@ prompt_mode_and_channel() {
   # Channel Mode Prompts
   if [[ -z "${CHANNEL}" ]]; then
     echo -e "\n${BOLD}Select a channel:${NC}"
-    echo -e "  ${CYAN}1${NC}) feishu   (飞书)"
+    echo -e "  ${CYAN}1${NC}) feishu"
     echo -e "  ${CYAN}2${NC}) whatsapp"
     echo -e "  ${CYAN}3${NC}) telegram"
     echo -e "  ${CYAN}4${NC}) discord"
@@ -309,7 +309,7 @@ prompt_mode_and_channel() {
   fi
 
   if [[ -z "${REQUIRE_MENTION}" ]]; then
-    echo -e "\n${BOLD}  Require @mention to trigger agent?${NC} (y=必须@, n=自动回复所有消息)"
+    echo -e "\n${BOLD}  Require @mention to trigger agent?${NC} (y=require @mention, n=auto-reply to all messages)"
     echo -en "  Choice [Y/n]: "
     read -r mc
     case "${mc}" in

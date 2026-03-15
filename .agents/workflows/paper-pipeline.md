@@ -1,172 +1,172 @@
 ---
-description: 从零到论文提交的完整流水线，协调所有 Agent 完成一篇顶会论文
+description: Complete pipeline from zero to paper submission, coordinating all Agents to complete a top conference paper
 ---
 
-# 📋 完整论文产出流水线（Paper Pipeline）
+# 📋 Complete Paper Production Pipeline (Paper Pipeline)
 
-本工作流定义了从研究方向到论文提交的完整流程，包含 **Critic 品鉴节点** 和 **主 Agent 审核关卡**。
-
----
-
-## Phase 0: 项目初始化（Planner 主导）
-
-1. **明确目标**：确认目标会议、DDL、研究范围
-2. **启动 Scout**：开始监控相关方向的最新论文
-3. **评估团队**：检查核心 8 Agent 是否满足需要，识别是否需要追加自定义 Agent
-4. **创建项目看板**：初始化进度追踪文档
-
-**输出**: 项目计划文档、时间线、团队配置
+This workflow defines the complete process from research direction to paper submission, including **Critic review nodes** and **Main Agent audit gates**.
 
 ---
 
-## Phase 1: 文献调研（Surveyor 主导，1-2 周）
+## Phase 0: Project Initialization (Planner-led)
 
-1. **Surveyor** 进行系统文献调研：
-   - 收集相关方向近 2-3 年的重要论文
-   - 整理方法分类和 SOTA 对比表
-   - 识别 Research Gap
-2. **Scout** 补充最新预印本和趋势信息
-3. **Planner** 整合调研结果，确认研究方向
+1. **Clear goals**: Confirm target conference, DDL, research scope
+2. **Activate Scout**: Start monitoring latest papers in related directions
+3. **Evaluate team**: Check if core 8 Agents meet needs, identify if custom Agents need to be added
+4. **Create project board**: Initialize progress tracking document
 
-**输出**: 文献调研报告、Research Gap 列表、推荐阅读清单
+**Output**: Project plan document, timeline, team configuration
 
 ---
 
-## Phase 2: Idea 生成与筛选（Ideator 主导，1 周）
+## Phase 1: Literature Survey (Surveyor-led, 1-2 weeks)
 
-1. **Ideator** 基于调研结果生成 3-5 个候选 Idea
-2. 对每个 Idea 进行 ACE 评分（Attractiveness, Contribution, Executability）
-3. **Surveyor** 验证候选 Idea 的新颖性（是否已有类似工作）
-4. 与用户讨论，选定 Top 1-2 Idea
-5. **Ideator** 精炼 Contribution Statement
+1. **Surveyor** conducts systematic literature survey:
+   - Collect important papers from related directions in the last 2-3 years
+   - Organize method classification and SOTA comparison tables
+   - Identify Research Gaps
+2. **Scout** supplements latest preprints and trend information
+3. **Planner** integrates survey results, confirms research direction
 
-**输出**: Idea 评估报告、候选 Research Idea Card、Contribution Statement 初稿
-
----
-
-## 🎯 Phase 2.5: Idea 品鉴（Critic 裁决，3-5 天）
-
-> ⚡ **这是最关键的品味关卡。未通过此关卡，不得进入 Phase 3。**
-
-1. **Critic** 接收 Idea Card + ACE 评估，进行 SHARP 品鉴
-2. 执行"一句话 Insight Test"和"酒吧测试"
-3. 模拟最刁钻审稿人的 Top 3 压力测试
-4. 进行"论文灵魂三问"
-5. 检测是否命中经典反模式（套壳创新、堆料式、SOTA 刷分等）
-6. 给出 Taste 判定：
-   - 🏆 **Exquisite**（23-25）→ 全力推进
-   - 🟢 **Refined**（18-22）→ 通过，值得投入
-   - 🟡 **Raw**（13-17）→ 需要打磨，返回 **Ideator** 迭代
-   - 🔴 **Bland**（<13）→ 另起炉灶，返回 **Phase 2** 重新生成
-
-**通过标准**: SHARP ≥ 18（Refined 及以上）
-
-**如果未通过**:
-- Critic 给出具体的品味提升方向
-- Ideator 据此迭代打磨 Idea
-- 最多 3 轮迭代，仍未通过则上报主 Agent 仲裁
-
-**输出**: SHARP 品鉴报告、最终定稿 Idea Card
+**Output**: Literature survey report, Research Gap list, recommended reading list
 
 ---
 
-## Phase 3: 方法设计（Ideator + Coder 协作，1-2 周）
+## Phase 2: Idea Generation and Screening (Ideator-led, 1 week)
 
-1. **Ideator** 将 Idea 转化为详细的方法设计
-2. **Coder** 评估技术可行性
-3. 迭代讨论方法细节：
-   - 确定核心算法
-   - 设计架构图
-   - 定义损失函数和训练策略
-4. 🎯 **Critic** 评估方法优雅性（Parsimony ≥ 4）
-5. **Planner** 确认方法方案
+1. **Ideator** generates 3-5 candidate Ideas based on survey results
+2. Perform ACE scoring for each Idea (Attractiveness, Contribution, Executability)
+3. **Surveyor** verifies novelty of candidate Ideas (if similar work exists)
+4. Discuss with user, select Top 1-2 Ideas
+5. **Ideator** refines Contribution Statement
 
-**输出**: 方法设计文档、架构图、实验计划
+**Output**: Idea evaluation report, candidate Research Idea Card, draft Contribution Statement
 
 ---
 
-## Phase 4: 代码实现（Coder 主导，2-4 周）
+## 🎯 Phase 2.5: Idea Review (Critic's Decision, 3-5 days)
 
-1. **Coder** 搭建项目骨架
-2. 实现核心算法模块
-3. 实现数据加载和预处理
-4. 实现训练和评估流程
-5. 进行 Sanity Check（小规模快速验证）
-6. **Planner** 进行代码 Review
+> ⚡ **This is the most critical taste gate. Cannot proceed to Phase 3 without passing this gate.**
 
-**输出**: 可运行的代码仓库、Sanity Check 结果
+1. **Critic** receives Idea Card + ACE evaluation, performs SHARP review
+2. Execute "One-sentence Insight Test" and "Bar Test"
+3. Simulate most demanding reviewer's Top 3 stress tests
+4. Perform "Three Soul Questions for Papers"
+5. Check for classic anti-pattern hits (wrapper innovation, stacking, SOTA chasing, etc.)
+6. Give Taste verdict:
+   - 🏆 **Exquisite** (23-25) → Push forward with full force
+   - 🟢 **Refined** (18-22) → Pass, worth investing
+   - 🟡 **Raw** (13-17) → Needs polishing, return to **Ideator** for iteration
+   - 🔴 **Bland** (<13) → Start over, return to **Phase 2** for regeneration
+
+**Pass criteria**: SHARP ≥ 18 (Refined and above)
+
+**If not passed**:
+- Critic gives specific taste improvement directions
+- Ideator iterates and polishes Idea accordingly
+- Maximum 3 rounds of iteration, if still not passed, escalate to Main Agent for arbitration
+
+**Output**: SHARP review report, finalized Idea Card
 
 ---
 
-## Phase 5: 实验执行（Coder 主导，2-3 周）
+## Phase 3: Method Design (Ideator + Coder collaboration, 1-2 weeks)
 
-1. **Coder** 运行主实验（与 Baseline 对比）
-2. 运行消融实验
-3. 运行分析实验（Case Study, Visualization 等）
-4. 收集所有实验结果
-5. **Planner** 检查实验覆盖度
+1. **Ideator** transforms Idea into detailed method design
+2. **Coder** evaluates technical feasibility
+3. Iterate and discuss method details:
+   - Determine core algorithm
+   - Design architecture diagram
+   - Define loss function and training strategy
+4. 🎯 **Critic** evaluates method elegance (Parsimony ≥ 4)
+5. **Planner** confirms method plan
 
-**输出**: 实验结果报告、数据表格、图表
+**Output**: Method design document, architecture diagram, experiment plan
 
 ---
 
-## Phase 6: 论文撰写（Writer 主导，2-3 周）
+## Phase 4: Code Implementation (Coder-led, 2-4 weeks)
 
-1. **Writer** 撰写论文大纲
-2. 依次撰写各章节：
-   - Abstract（最后修改）
-   - Introduction（Ideator 提供 Motivation 素材）
-   - Related Work（Surveyor 提供草稿）
-   - Method（Coder 提供技术细节）
-   - Experiments（Coder 提供结果数据）
+1. **Coder** sets up project skeleton
+2. Implement core algorithm modules
+3. Implement data loading and preprocessing
+4. Implement training and evaluation pipeline
+5. Perform Sanity Check (small-scale quick validation)
+6. **Planner** performs code review
+
+**Output**: Runnable code repository, Sanity Check results
+
+---
+
+## Phase 5: Experiment Execution (Coder-led, 2-3 weeks)
+
+1. **Coder** runs main experiments (Baseline comparison)
+2. Run ablation experiments
+3. Run analysis experiments (Case Study, Visualization, etc.)
+4. Collect all experimental results
+5. **Planner** checks experiment coverage
+
+**Output**: Experiment result report, data tables, figures
+
+---
+
+## Phase 6: Paper Writing (Writer-led, 2-3 weeks)
+
+1. **Writer** writes paper outline
+2. Write each section in order:
+   - Abstract (modify last)
+   - Introduction (Ideator provides Motivation material)
+   - Related Work (Surveyor provides draft)
+   - Method (Coder provides technical details)
+   - Experiments (Coder provides result data)
    - Conclusion
-3. 制作图表（架构图、结果可视化）
-4. 整理参考文献
-5. 🎯 **Critic** 评估叙事品质和记忆点（至少 1 个明确记忆点）
+3. Create figures (architecture diagram, result visualization)
+4. Organize references
+5. 🎯 **Critic** evaluates narrative quality and memory points (at least 1 clear memory point)
 
-**输出**: 论文初稿（LaTeX）
-
----
-
-## Phase 7: 内部审稿与修改（Reviewer + Critic + Writer 迭代，1-2 周）
-
-1. **Reviewer** 进行第一轮全面审稿（技术维度）
-2. 🎯 **Critic** 进行品质终审（品味维度）
-3. **Writer** 根据 Reviewer + Critic 的意见修改论文
-4. **Coder** 补充实验（如果 Reviewer/Critic 要求）
-5. **Reviewer** 进行第二轮审稿
-6. 重复直到 Reviewer 给出 Accept + **Critic 确认"值得投"**
-
-**输出**: 修改后的论文、审稿报告、品质终审报告
+**Output**: Paper draft (LaTeX)
 
 ---
 
-## Phase 8: 提交准备（Planner 统筹，2-3 天）
+## Phase 7: Internal Review and Revision (Reviewer + Critic + Writer iteration, 1-2 weeks)
 
-1. **Reviewer** 进行最终 Camera-Ready 检查
-2. 格式合规性确认（页数、字体、匿名性）
-3. 准备 Supplementary Material
-4. 完成 Submission Checklist
-5. 🔐 **主 Agent 最终审核**：Phase Gate Audit
-6. **Planner** 确认一切就绪
-7. 提交！🎉
+1. **Reviewer** performs first round comprehensive review (technical dimension)
+2. 🎯 **Critic** performs final quality review (taste dimension)
+3. **Writer** revises paper based on Reviewer + Critic feedback
+4. **Coder** supplements experiments (if required by Reviewer/Critic)
+5. **Reviewer** performs second round review
+6. Repeat until Reviewer gives Accept + **Critic confirms "worth submitting"**
 
-**输出**: 最终论文包（Main Paper + Appendix + Supplement）
+**Output**: Revised paper, review report, final quality review report
 
 ---
 
-## 时间预算参考（以 3 个月为例）
+## Phase 8: Submission Preparation (Planner coordinated, 2-3 days)
+
+1. **Reviewer** performs final Camera-Ready check
+2. Confirm format compliance (page count, fonts, anonymity)
+3. Prepare Supplementary Material
+4. Complete Submission Checklist
+5. 🔐 **Main Agent final audit**: Phase Gate Audit
+6. **Planner** confirms everything is ready
+7. Submit! 🎉
+
+**Output**: Final paper package (Main Paper + Appendix + Supplement)
+
+---
+
+## Time Budget Reference (3 months as example)
 
 ```
-Week 1-2:   Phase 1 (文献调研)
-Week 2-3:   Phase 2 (Idea 生成)
-Week 3:     Phase 2.5 (🎯 Critic 品鉴) ← 关键节点
-Week 3-4:   Phase 3 (方法设计)
-Week 4-7:   Phase 4 (代码实现)
-Week 7-9:   Phase 5 (实验执行)
-Week 9-11:  Phase 6 (论文撰写)
-Week 11-12: Phase 7 (审稿修改 + 品质终审)
-Week 12-13: Phase 8 (提交准备 + 主Agent审核)
+Week 1-2:   Phase 1 (Literature Survey)
+Week 2-3:   Phase 2 (Idea Generation)
+Week 3:     Phase 2.5 (🎯 Critic Review) ← Key Node
+Week 3-4:   Phase 3 (Method Design)
+Week 4-7:   Phase 4 (Code Implementation)
+Week 7-9:   Phase 5 (Experiment Execution)
+Week 9-11:  Phase 6 (Paper Writing)
+Week 11-12: Phase 7 (Review Revision + Final Quality Review)
+Week 12-13: Phase 8 (Submission Preparation + MainAgent Audit)
 ```
 
-> ⚠️ 实际进度应根据 DDL 倒推调整。如果 Phase 2.5 品鉴未通过需要迭代，后续阶段时间相应压缩。
+> ⚠️ Actual progress should be adjusted based on DDL countdown. If Phase 2.5 review fails and needs iteration, subsequent phases will be compressed accordingly.

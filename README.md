@@ -102,7 +102,7 @@ Ask the user these questions:
 3. **How to assign groups?**
    - **All in one group**: provide one `--group-id <ID>`
    - **Separate groups per agent**: interactively paste 8 different group IDs in the script.
-4. **需要 @mention 才回复吗？** → `--require-mention true|false`
+4. **Require @mention to reply?** → `--require-mention true|false`
 
 *(For both modes)*
 5. **Which LLM model?** (default: `zai/glm-5`) → `--model <MODEL>`
@@ -264,7 +264,7 @@ Each agent has three core files inside `.agents/<agent_id>/`:
 
 | Channel | Group ID Format | Example | Docs |
 |---------|----------------|---------|------|
-| **Feishu** (飞书) | `oc_xxxxxxxxx` | `oc_b1c331592eaa36d06a7e5df05d08a890` | [Feishu docs](https://docs.openclaw.ai/channels/feishu) |
+| **Feishu** | `oc_xxxxxxxxx` | `oc_b1c331592eaa36d06a7e5df05d08a890` | [Feishu docs](https://docs.openclaw.ai/channels/feishu) |
 | **WhatsApp** | `xxxxx@g.us` | `120363999999999999@g.us` | [WhatsApp docs](https://docs.openclaw.ai/channels/whatsapp) |
 | **Telegram** | Negative integer | `-1001234567890` | [Telegram docs](https://docs.openclaw.ai/channels/telegram) |
 | **Discord** | Guild ID | `1234567890` | [Discord docs](https://docs.openclaw.ai/channels/discord) |
@@ -331,7 +331,7 @@ Each agent has unique `mentionPatterns`:
 }
 ```
 
-> **How it works**: Type `@planner 请分解这个任务` in the group, and only the 💡 Planner agent will respond.
+> **How it works**: Type `@planner break down this task` in the group, and only the 💡 Planner agent will respond.
 
 Messages that don't match any mention pattern are **stored for context** but don't trigger a reply — this allows agents to follow the conversation passively.
 
@@ -392,10 +392,10 @@ Agents show as `<emoji> <name>` in chat (configured via `identity.name`):
 
 | What You Type | Who Replies |
 |--------------|-------------|
-| `@planner 分解一下任务` | 🧠 Planner |
-| `@critic 评估这个 idea` | 🎯 Critic |
-| `@coder 跑一下实验` | 💻 Coder |
-| `@writer 写 related work` | ✍️ Writer |
+| `@planner break down this task` | 🧠 Planner |
+| `@critic evaluate this idea` | 🎯 Critic |
+| `@coder run the experiments` | 💻 Coder |
+| `@writer write related work` | ✍️ Writer |
 
 ### Pre-built Examples
 
@@ -416,7 +416,7 @@ Agents show as `<emoji> <name>` in chat (configured via `identity.name`):
 | 💡 Brainstorm | `/brainstorm` | Rapid idea generation and evaluation |
 | 🔄 Rebuttal | `/rebuttal` | Reviewer response preparation |
 
-### Taste Gates (品鉴节点)
+### Taste Gates
 
 The Critic agent enforces quality at four critical checkpoints:
 

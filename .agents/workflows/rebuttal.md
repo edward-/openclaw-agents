@@ -1,69 +1,69 @@
 ---
-description: Rebuttal 准备和回复的标准化流程
+description: Standardized process for Rebuttal preparation and response
 ---
 
-# 🔄 Rebuttal 工作流（Rebuttal Workflow）
+# 🔄 Rebuttal Workflow (Rebuttal Workflow)
 
-当收到审稿意见后，协调 Reviewer + Writer + Coder 完成高质量 Rebuttal。
-
----
-
-## 触发条件
-- 收到顶会审稿结果
-- 用户请求：`/rebuttal`
+When review comments are received, coordinate Reviewer + Writer + Coder to complete high-quality Rebuttal.
 
 ---
 
-## Step 1: 审稿意见分析（Reviewer 主导）
+## Trigger Conditions
+- Received top conference review results
+- User request: `/rebuttal`
 
-1. 逐条解析每位审稿人的意见
-2. 将意见分类：
+---
 
-| 类型 | 描述 | 处理策略 |
+## Step 1: Review Comment Analysis (Reviewer-led)
+
+1. Parse each reviewer's comments line by line
+2. Classify comments:
+
+| Type | Description | Handling Strategy |
 |------|------|---------|
-| 🔴 **合理批评** | 的确是论文弱点 | 承认 + 展示改进 |
-| 🟡 **误解** | 审稿人理解有误 | 礼貌澄清 + 指出原文位置 |
-| 🟢 **建设性建议** | 有益的改进建议 | 感谢 + 采纳/说明计划 |
-| ⚪ **超出范围** | 不合理要求 | 优雅地界定 scope |
+| 🔴 **Reasonable Criticism** | Indeed a weakness of the paper | Acknowledge + Show improvement |
+| 🟡 **Misunderstanding** | Reviewer misunderstood | Politely clarify + Point to original text |
+| 🟢 **Constructive Suggestion** | Helpful improvement suggestion | Thank + Adopt/Explain plan |
+| ⚪ **Out of Scope** | Unreasonable requirement | Elegantly define scope |
 
-3. 识别跨审稿人的共同问题（同一问题被多人指出＝重要性 ×2）
-4. 按优先级排序所有问题
-
----
-
-## Step 2: Rebuttal 策略制定（Planner + Reviewer）
-
-1. 确定 Rebuttal 的核心论点
-2. 分配任务：
-   - 需要补充实验 → **Coder**
-   - 需要修改论文 → **Writer**
-   - 需要补充引用 → **Surveyor**
-3. 制定时间计划（通常 Rebuttal 窗口 5-7 天）
-4. 确定 Rebuttal 回复的整体框架
+3. Identify common issues across reviewers (same issue pointed by multiple reviewers = importance ×2)
+4. Prioritize all issues
 
 ---
 
-## Step 3: 补充工作（并行执行）
+## Step 2: Rebuttal Strategy Formulation (Planner + Reviewer)
 
-### Coder 补充实验
-- 按优先级运行审稿人要求的额外实验
-- 生成新的结果表格和可视化
-- 确保结果可靠且可复现
-
-### Writer 准备 Revision
-- 标记论文中需要修改的段落
-- 撰写修改后的文段（用于 Rebuttal 引用）
-- 准备 Diff 对照（修改前 vs 修改后）
-
-### Surveyor 补充引用
-- 搜索审稿人提到的缺失引用
-- 提供新增引用的 BibTeX
+1. Determine core arguments of Rebuttal
+2. Assign tasks:
+   - Need supplementary experiments → **Coder**
+   - Need paper modifications → **Writer**
+   - Need additional citations → **Surveyor**
+3. Develop time plan (typically Rebuttal window 5-7 days)
+4. Determine overall framework for Rebuttal response
 
 ---
 
-## Step 4: Rebuttal 撰写（Writer 主导）
+## Step 3: Supplementary Work (Parallel Execution)
 
-### 回复格式
+### Coder Supplementary Experiments
+- Run extra experiments requested by reviewers by priority
+- Generate new result tables and visualizations
+- Ensure results are reliable and reproducible
+
+### Writer Prepare Revision
+- Mark paragraphs in paper needing modification
+- Write revised passages (for Rebuttal citation)
+- Prepare Diff comparison (before vs. after)
+
+### Surveyor Supplementary Citations
+- Search for missing citations mentioned by reviewers
+- Provide BibTeX for new citations
+
+---
+
+## Step 4: Rebuttal Writing (Writer-led)
+
+### Response Format
 ```markdown
 We sincerely thank all reviewers for their constructive feedback.
 We address each concern below.
@@ -72,11 +72,11 @@ We address each concern below.
 
 ## Response to Reviewer 1 (Score: X)
 
-**[W1] [审稿人原话概括]**
+**[W1] [Summary of reviewer's original comment]**
 
-Thank you for this insightful comment. [回复内容]
+Thank you for this insightful comment. [Response content]
 
-[如果有补充实验数据]
+[If supplementary experimental data]
 | Method | Metric | Result |
 |--------|--------|--------|
 | ...    | ...    | ...    |
@@ -92,50 +92,50 @@ Thank you for this insightful comment. [回复内容]
 ---
 
 ## Summary of Changes
-1. [修改1]（Section X, Paragraph Y）
-2. [修改2]（Table Z）
-3. [修改3]（Appendix A）
+1. [Change 1] (Section X, Paragraph Y)
+2. [Change 2] (Table Z)
+3. [Change 3] (Appendix A)
 ```
 
-### 写作要点
-- 开头感谢，态度真诚
-- 直接回答，不回避问题
-- 用数据和事实说话
-- 指出论文中已有但审稿人可能遗漏的内容
-- 篇幅控制在限制范围内
-- 多读几次确保语气不defensive
+### Writing Points
+- Start with thanks, sincere attitude
+- Answer directly, don't dodge questions
+- Let data and facts speak
+- Point out content already in paper that reviewers may have missed
+- Keep length within limits
+- Read multiple times to ensure tone is not defensive
 
 ---
 
-## Step 5: 内部审核（Reviewer 审核 Rebuttal）
+## Step 5: Internal Audit (Reviewer audits Rebuttal)
 
-1. **Reviewer** 审查 Rebuttal 草稿
-2. 检查要点：
-   - [ ] 每个问题都有回应
-   - [ ] 回复有理有据，不空洞
-   - [ ] 语气恰当（不卑不亢）
-   - [ ] 补充的数据/实验可靠
-   - [ ] 篇幅不超限
-   - [ ] 没有自相矛盾的内容
-3. 修改建议 → **Writer** 修改
-4. 确认最终版本
-
----
-
-## Step 6: 提交 Rebuttal
-
-1. **Planner** 最终检查确认
-2. 格式确认（符合会议 Rebuttal 要求）
-3. 提交 Rebuttal
-4. 如允许论文修改，同步提交 Revised Paper
+1. **Reviewer** reviews Rebuttal draft
+2. Check points:
+   - [ ] Every issue has a response
+   - [ ] Responses are well-supported, not empty
+   - [ ] Tone appropriate (neither submissive nor aggressive)
+   - [ ] Supplementary data/experiments are reliable
+   - [ ] Length doesn't exceed limit
+   - [ ] No contradictory content
+3. Modification suggestions → **Writer** revises
+4. Confirm final version
 
 ---
 
-## Rebuttal 黄金法则
+## Step 6: Submit Rebuttal
 
-1. **感谢 > 辩解**：先真诚感谢，再优雅回应
-2. **数据 > 承诺**：用实验结果说话，而不是"我们会改"
-3. **具体 > 泛泛**：指出论文具体段落/表格，不空谈
-4. **所有问题都需要回应**：即使是小问题也不要忽略
-5. **统一口径**：所有回复保持逻辑一致
-6. **控制篇幅**：精简有力，不灌水
+1. **Planner** final check and confirmation
+2. Format confirmation (meets conference Rebuttal requirements)
+3. Submit Rebuttal
+4. If paper revision is allowed, submit Revised Paper simultaneously
+
+---
+
+## Rebuttal Golden Rules
+
+1. **Thanks > Justification**: Thank sincerely first, then respond elegantly
+2. **Data > Promises**: Let experimental results speak, not "we will change"
+3. **Specific > General**: Point to specific paragraphs/tables in paper, don't speak in generalities
+4. **All Issues Need Response**: Don't ignore even minor issues
+5. **Consistent Voice**: All responses maintain logical consistency
+6. **Control Length**: Concise and powerful, don't pad

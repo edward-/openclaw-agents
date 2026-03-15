@@ -62,7 +62,7 @@ openclaw plugins install @openclaw/feishu
 Ask the user these questions to determine setup flags:
 
 1. **Which channel do you use for chat?**
-   - **Feishu (飞书)** → `--channel feishu`
+   - **Feishu** → `--channel feishu`
    - **WhatsApp** → `--channel whatsapp`
    - **Telegram** → `--channel telegram`
    - **Discord** → `--channel discord`

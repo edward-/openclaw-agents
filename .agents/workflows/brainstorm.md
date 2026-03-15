@@ -1,74 +1,74 @@
 ---
-description: 快速 Idea 头脑风暴会议流程
+description: Fast Idea brainstorming session workflow
 ---
 
-# 💡 Idea 头脑风暴工作流（Brainstorm Session）
+# 💡 Idea Brainstorm Workflow (Brainstorm Session)
 
-快速生成和评估研究 Idea 的协作流程。
-
----
-
-## 触发条件
-- 用户想要新的研究 Idea
-- 用户请求：`/brainstorm`
-- Planner 判断需要新的研究方向
+A collaborative process for quickly generating and evaluating research Ideas.
 
 ---
 
-## Step 1: 上下文准备（5 分钟）
-
-**Planner** 收集背景信息：
-1. 用户的研究方向约束
-2. 目标会议和 DDL
-3. 可用的计算资源
-4. 已有的实验基建（可复用的代码/数据）
-5. 用户最近关注的论文或灵感
-
-**Scout** 快速提供：
-1. 最近一周的相关热门论文
-2. 当前研究趋势关键词
+## Trigger Conditions
+- User wants new research Idea
+- User request: `/brainstorm`
+- Planner determines need for new research direction
 
 ---
 
-## Step 2: 自由发散（Ideator 主导）
+## Step 1: Context Preparation (5 minutes)
 
-**Ideator** 从多个维度生成 Idea：
+**Planner** collects background information:
+1. User's research direction constraints
+2. Target conference and DDL
+3. Available computing resources
+4. Existing experimental infrastructure (reusable code/data)
+5. Papers or inspirations user recently follows
 
-### 维度 1：问题驱动
-- 现有方法有哪些明显的 Limitation？
-- 哪些问题被忽视了？
-- 哪些假设可以被挑战？
-
-### 维度 2：方法迁移
-- 其他领域有哪些有趣的方法可以借鉴？
-- 不同的技术组合能产生什么效果？
-
-### 维度 3：数据/场景驱动
-- 有没有新的数据集或评测场景值得关注？
-- 现有 Benchmark 有哪些不足？
-
-### 维度 4：理论驱动
-- 是否有未被解释的实验现象？
-- 是否有理论和实践的差距？
-
-**目标**：生成 5-10 个粗略 Idea，不过早评判
+**Scout** quickly provides:
+1. Relevant popular papers from the past week
+2. Current research trend keywords
 
 ---
 
-## Step 3: 新颖性验证（Surveyor 配合）
+## Step 2: Free Divergence (Ideator-led)
 
-**Surveyor** 快速检查每个 Idea：
-- 是否有类似的已发表工作？
-- 与最接近的工作有什么区别？
-- 新颖性评级：🟢 新颖 / 🟡 有差异 / 🔴 太相似
+**Ideator** generates Ideas from multiple dimensions:
+
+### Dimension 1: Problem-driven
+- What are the obvious Limitations of existing methods?
+- What problems have been neglected?
+- What assumptions can be challenged?
+
+### Dimension 2: Method Transfer
+- What interesting methods from other fields can be borrowed?
+- What effects can different technical combinations produce?
+
+### Dimension 3: Data/Scenario-driven
+- Are there new datasets or evaluation scenarios worth attention?
+- What are the deficiencies of existing Benchmarks?
+
+### Dimension 4: Theory-driven
+- Are there unexplained experimental phenomena?
+- Is there a gap between theory and practice?
+
+**Goal**: Generate 5-10 rough Ideas, don't judge too early
 
 ---
 
-## Step 4: ACE 评估（Ideator + Planner）
+## Step 3: Novelty Verification (Surveyor-assisted)
 
-对通过新颖性验证的 Idea 进行评分：
+**Surveyor** quickly checks each Idea:
+- Are there similar published works?
+- What's the difference from the most similar work?
+- Novelty rating: 🟢 Novel / 🟡 Different / 🔴 Too Similar
 
-| Idea | A (吸引力) | C (贡献度) | E (可执行性) | 总分 | 推荐 |
+---
+
+## Step 4: ACE Evaluation (Ideator + Planner)
+
+Score Ideas that passed novelty verification:
+
+| Idea | A (Attractiveness) | C (Contribution) | E (Executability) | Total | Recommend |
 |------|-----------|-----------|-------------|------|------|
 | Idea 1 | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | 11 | 🟡 |
 | Idea 2 | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | 13 | 🟢 |
@@ -76,51 +76,51 @@ description: 快速 Idea 头脑风暴会议流程
 
 ---
 
-## Step 5: 深入讨论 Top 2（与用户互动）
+## Step 5: In-depth Discussion of Top 2 (Interactive with User)
 
-选择得分最高的 2 个 Idea，进入深度讨论：
-1. 详细阐述方法思路
-2. 分析可能的实验结果
-3. 讨论潜在风险和 Plan B
-4. 与用户偏好对齐
-5. 最终确定 1 个 Idea 推进
-
----
-
-## 🎯 Step 5.5: Critic 品鉴（Critic 裁决）
-
-**Critic** 对选定的 Idea 进行 SHARP 品鉴：
-1. 执行"一句话 Insight Test"——核心 insight 是否足够锋利？
-2. 执行"酒吧测试"——30 秒能让同行说"有意思"吗？
-3. 模拟最刁钻审稿人的压力测试
-4. 检测是否命中反模式（套壳创新、堆料式等）
-5. 给出 SHARP 评分和 Taste 判定
-
-**如果通过**（SHARP ≥ 18）→ 进入 Step 6
-**如果未通过** → 返回 Step 5 与 Ideator 迭代打磨，或返回 Step 2 重新发散
+Select top 2 Ideas by score for in-depth discussion:
+1. Elaborate method idea in detail
+2. Analyze possible experimental results
+3. Discuss potential risks and Plan B
+4. Align with user preferences
+5. Finalize 1 Idea to push forward
 
 ---
 
-## Step 6: Idea Card 完善
+## 🎯 Step 5.5: Critic Review (Critic's Decision)
 
-**Ideator** 输出完整的 Research Idea Card（经 Critic 品鉴通过）：
-- 标题
-- 一句话摘要
+**Critic** performs SHARP taste assessment on selected Idea:
+1. Execute "One-sentence Insight Test" — Is core insight sharp enough?
+2. Execute "Bar Test" — Can you make a colleague say "interesting" in 30 seconds?
+3. Simulate the most demanding reviewer's stress test
+4. Check for anti-pattern hits (wrapper innovation, stacking, etc.)
+5. Give SHARP score and Taste verdict
+
+**If passed** (SHARP ≥ 18) → Proceed to Step 6
+**If not passed** → Return to Step 5 for iterative polishing with Ideator, or return to Step 2 for new divergence
+
+---
+
+## Step 6: Idea Card Finalization
+
+**Ideator** outputs complete Research Idea Card (passed Critic review):
+- Title
+- One-sentence summary
 - Motivation
 - Key Idea
-- 预期实验
-- Contribution Statement（3-4 条）
-- 风险与 Plan B
-- 🎯 SHARP 品鉴评分
+- Expected experiments
+- Contribution Statement (3-4 items)
+- Risks and Plan B
+- 🎯 SHARP review score
 
-交付给 **Planner** 进入 Paper Pipeline Phase 3。
+Deliver to **Planner** to enter Paper Pipeline Phase 3.
 
 ---
 
-## 注意事项
-- 头脑风暴阶段鼓励大胆假设，不要过早否定
-- 新颖性验证应快速但不苛刻（可以后续深入调研）
-- **Critic 品鉴是硬关卡**：未通过 SHARP ≥ 18 的 Idea 不得进入正式流程
-- 最终选择需要平衡创新性与可行性
-- 用户的直觉和兴趣是重要参考
-- Critic 的苛刻是为了确保团队不浪费时间在"能发但不够好"的 Idea 上
+## Notes
+- Brainstorming phase encourages bold hypotheses, don't deny too early
+- Novelty verification should be quick but not too strict (can follow up with in-depth research)
+- **Critic review is a hard gate**: Ideas not passing SHARP ≥ 18 cannot enter the formal process
+- Final selection needs to balance innovation and feasibility
+- User's intuition and interests are important references
+- Critic's harshness is to ensure the team doesn't waste time on Ideas that "can publish but aren't good enough"
